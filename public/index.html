@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meet The Strangers</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <div class="main_container">
+      <!-- first section -->
+      <div class="dashboard_container">
+        <!-- logo section -->
+        <div class="logo_container">
+          <img src="./images/logo.png" alt="logo" class="" />
+        </div>
+
+        <!-- description section -->
+        <div>
+          <div class="description_container">
+            <p class="description_container_paragraph">
+              Welcome to Meet The Strangers! This is a virtual platform where you can connect with people from different
+              backgrounds and share your experiences.
+            </p>
+          </div>
+
+          <div class="personal_code_container">
+            <div class="personal_code_title_container">
+              <p class="personal_code_title_container_paragraph">Your Personal Code:</p>
+            </div>
+            <div class="personal_code_value_container">
+              <p class="personal_code_value_paragraph" id="personal_code_paragraph">MOg62ey_i5bzUj5WAAAL</p>
+              <button class="personal_code_copy_button" id="personal_code_copy_button">
+                <img src="./images/copyButton.png" alt="" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- personal code section -->
+        <div class="personal_code_connecting_container">
+          <p class="personal_code_connecting_paragraph">Personal Code</p>
+          <div class="personal_code_connecting_input_container">
+            <input type="text" class="personal_code_input" id="personal_code_input" />
+          </div>
+          <div class="personal_code_connecting_buttons_container">
+            <button class="connecting_button" id="personal_code_chat_button">
+              <img src="./images/chatButton.png" alt="chat button" class="connecting_buttons_image" />
+            </button>
+            <button class="connecting_button" id="personal_video_chat_button">
+              <img src="./images/videoButton.png" alt="video button" class="connecting_buttons_image" />
+            </button>
+          </div>
+        </div>
+
+        <!-- stranger section -->
+        <div class="stranger_connecting_container">
+          <p class="stranger_title_container">Stranger</p>
+          <div class="stranger_buttons_container">
+            <button class="connecting_button" id="stranger_chat_button">
+              <img src="./images/chatButton.png" alt="chat button" class="connecting_buttons_image" />
+            </button>
+            <button class="connecting_button" id="stranger_video_button">
+              <img src="./images/videoButton.png" alt="video button" class="connecting_buttons_image" />
+            </button>
+          </div>
+        </div>
+
+        <!-- allow stranger section -->
+        <div class="checkbox_container">
+          <div class="checkbox_connection" id="allow_strangers_checkbox">
+            <img src="./images/check.png" alt="check" id="allow_strangers_checkbox_image" class="display_none" />
+          </div>
+          <p class="checkbox_container_paragraph">Allow strangers to connect to you.</p>
+        </div>
+        <div class="dashboard_blur display_none" id="dashboard_blur"></div>
+      </div>
+
+      <!-- second section -->
+      <div class="call_container">
+        <div class="videos_container">
+          <div class="videos_placeholder" id="video_placeholder">
+            <img src="./images/logo.png" alt="logo video container" />
+          </div>
+          <!-- remote video section -->
+          <video class="remote_video display_none" id="remote_video" autoplay></video>
+          <!-- local video section -->
+          <div class="local_video_container">
+            <video class="local_video" id="local_video" muted autoplay></video>
+          </div>
+
+          <!-- action buttons -->
+          <div class="call_buttons_container display_none" id="call_buttons">
+            <button class="call_button_small" id="mic_button">
+              <img src="./images/mic.png" alt="mic button" id="mic_button_image" />
+            </button>
+            <button class="call_button_small" id="camera_button">
+              <img src="./images/camera.png" alt="camera button" id="camera_button_image" />
+            </button>
+            <button class="call_button_large" id="hang_up_button">
+              <img src="./images/hangUp.png" alt="hangUp button" />
+            </button>
+            <button class="call_button_small" id="screen_sharing_button">
+              <img src="./images/switchCameraScreenSharing.png" alt="screen sharing button" />
+            </button>
+            <button class="call_button_small" id="start_recording_button">
+              <img src="./images/recordingStart.png" alt="start recording button" />
+            </button>
+          </div>
+
+          <!-- finish chat button section -->
+          <div class="finish_chat_button_container display_none" id="finish_chat_button_container">
+            <button class="call_button_large" id="finish_chat_call_button">
+              <img src="./images/hangUp.png" alt="finish chat call button" />
+            </button>
+          </div>
+
+          <!-- video recording action buttons -->
+          <div class="video_recording_buttons_container display_none" id="video_recording_buttons">
+            <button id="pause_recording_button">
+              <img src="./images/pause.png" alt="pause button" />
+            </button>
+            <button id="resume_recording_button" class="display_none">
+              <img src="./images/resume.png" alt="resume button" />
+            </button>
+            <button id="stop_recording_button">stop recording</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- third section -->
+      <div class="messenger_container">
+        <!-- message section -->
+        <div class="messages_container" id="messages_container"></div>
+
+        <!-- new message action section -->
+        <div class="new_message_container display_none" id="new_message">
+          <input
+            type="text"
+            name=""
+            id=""
+            class="new_message_input"
+            id="new_message_input"
+            placeholder="Type your message..."
+          />
+          <button class="send_message_button" id="send_message_button">
+            <img src="./images/sendMessageButton.png" alt="" class="send_message_button_image" />
+          </button>
+        </div>
+      </div>
+      <div id="dialog"></div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/elements.js" type="module"></script>
+    <script src="./js/constants.js" type="module"></script>
+    <script src="./js/ui.js" type="module"></script>
+    <script src="./js/wss.js" type="module"></script>
+    <script src="./js/store.js" type="module"></script>
+    <script src="./js/webRTCHandler.js" type="module"></script>
+    <script src="./js/main.js" type="module"></script>
+  </body>
+</html>
