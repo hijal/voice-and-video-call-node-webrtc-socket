@@ -81,12 +81,13 @@ screenSharingButtonEl.addEventListener('click', () => {
 
 const newMessageInputEl = document.getElementById('new_message_input');
 
-newMessageInputEl.addEventListener('keydown', (event) => {
+newMessageInputEl?.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
     const message = event.target.value;
 
     if (message) {
       webRTCHandler.sendMessageUsingDataChannel(message);
+      ui.appendMessage(message, true);
       event.target.value = '';
     }
   }
@@ -94,11 +95,12 @@ newMessageInputEl.addEventListener('keydown', (event) => {
 
 const sendMessageButtonEl = document.getElementById('send_message_button');
 
-sendMessageButtonEl.addEventListener('click', () => {
-  const message = newMessageInputEl.value;
+sendMessageButtonEl?.addEventListener('click', () => {
+  const message = newMessageInputEl?.value;
 
   if (message) {
     webRTCHandler.sendMessageUsingDataChannel(message);
+    ui.appendMessage(message, true);
     newMessageInputEl.value = '';
   }
 });

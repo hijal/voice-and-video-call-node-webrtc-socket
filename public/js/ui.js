@@ -168,3 +168,16 @@ export const updateCameraButton = (cameraAction) => {
     cameraButtonEl.src = !cameraAction ? cameraOnSrc : cameraOffSrc;
   }
 };
+
+export const appendMessage = (message, right = false) => {
+  const messageContainerEl = document.getElementById('messages_container');
+
+  const messageEl = right ? elements.getRightMessage(message) : elements.getLeftMessage(message);
+
+  messageContainerEl.appendChild(messageEl);
+};
+
+export const clearMessages = () => {
+  const messageContainerEl = document.getElementById('messages_container');
+  messageContainerEl.querySelectorAll('*').forEach((message) => message.remove());
+};
