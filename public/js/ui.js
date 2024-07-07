@@ -197,3 +197,16 @@ export const resetRecordingButtons = () => {
   const recordingPanelEl = document.getElementById('video_recording_buttons');
   hideElement(recordingPanelEl);
 };
+
+export const switchRecordingButtons = (isResume) => {
+  const pauseRecordingButtonEl = document.getElementById('pause_recording_button');
+  const resumeRecordingButtonEl = document.getElementById('resume_recording_button');
+
+  if (isResume) {
+    showElement(resumeRecordingButtonEl);
+    hideElement(pauseRecordingButtonEl);
+  } else {
+    showElement(pauseRecordingButtonEl);
+    hideElement(resumeRecordingButtonEl);
+  }
+};
