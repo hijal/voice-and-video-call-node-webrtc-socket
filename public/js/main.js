@@ -3,7 +3,7 @@ import * as wss from './wss.js';
 import * as webRTCHandler from './webRTCHandler.js';
 import * as constants from './constants.js';
 import * as ui from './ui.js';
-// import { getInComingCallDialog } from './elements.js';
+import * as recording from './recording.js';
 
 const socket = io('/');
 
@@ -103,4 +103,18 @@ sendMessageButtonEl?.addEventListener('click', () => {
     ui.appendMessage(message, true);
     newMessageInputEl.value = '';
   }
+});
+
+const startRecordingButton = document.getElementById('start_recording_button');
+
+startRecordingButton?.addEventListener('click', () => {
+  recording.startRecording();
+  ui.showRecordingPanel();
+});
+
+const stopRecordingButton = document.getElementById('stop_recording_button');
+
+stopRecordingButton?.addEventListener('click', () => {
+  recording.stopRecording();
+  ui.resetRecordingButtons();
 });

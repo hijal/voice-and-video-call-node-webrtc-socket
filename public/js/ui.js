@@ -181,3 +181,19 @@ export const clearMessages = () => {
   const messageContainerEl = document.getElementById('messages_container');
   messageContainerEl.querySelectorAll('*').forEach((message) => message.remove());
 };
+
+export const showRecordingPanel = () => {
+  const recordingPanelEl = document.getElementById('video_recording_buttons');
+  showElement(recordingPanelEl);
+
+  const startRecordingButtonEl = document.getElementById('start_recording_button');
+  hideElement(startRecordingButtonEl);
+};
+
+export const resetRecordingButtons = () => {
+  const startRecordingButtonEl = document.getElementById('start_recording_button');
+  showElement(startRecordingButtonEl);
+
+  const recordingPanelEl = document.getElementById('video_recording_buttons');
+  hideElement(recordingPanelEl);
+};
