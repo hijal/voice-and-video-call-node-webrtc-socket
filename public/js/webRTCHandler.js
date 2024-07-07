@@ -4,10 +4,19 @@ import * as ui from './ui.js';
 import * as store from './store.js';
 
 let connectedUserDetails;
+let peerConnection;
 
-let defaultConstraints = {
+const defaultConstraints = {
   audio: true,
   video: true
+};
+
+const configuration = {
+  iceServers: [
+    {
+      urls: ['stun:stun.l.google.com:13902', 'stun:stun1.l.google.com:13902']
+    }
+  ]
 };
 
 export const sendPreOffer = (callType, calleePersonalCode) => {
@@ -43,6 +52,9 @@ const callingDialogRejectHandler = () => {
 
 const acceptCallHandler = () => {
   console.log('accepting the call');
+
+  createPeerConnection();
+
   sendPreOfferAnswer(constants.preOfferAnswer.CALL_ACCEPTED);
   ui.showCallElement(connectedUserDetails.callType);
 };
@@ -62,7 +74,7 @@ const sendPreOfferAnswer = (preOfferAnswer) => {
   wss.sendPreOfferAnswer(data);
 };
 
-export const handlePreOfferAnswer = (data) => {
+export const handlePreOfferAnswer = async (data) => {
   console.log('Pre offer Answer received');
   console.log('Pre offer Answer received data: ', data);
   const { callerSocketId, preOfferAnswer } = data;
@@ -87,9 +99,63 @@ export const handlePreOfferAnswer = (data) => {
   if (preOfferAnswer === constants.preOfferAnswer.CALL_ACCEPTED) {
     // show video call
     ui.showCallElement(connectedUserDetails.callType);
+
+    createPeerConnection();
+
+    await sendWebRTCOffer();
   } else {
     console.log('Unknown preference', callerSocketId);
     console.log('Invalid pre offer answer', preOfferAnswer);
+  }
+};
+
+const sendWebRTCOffer = async () => {
+  console.log('Sending WebRTC Offer');
+
+  const offer = await peerConnection.createOffer();
+  await peerConnection.setLocalDescription(offer);
+
+  wss.sendDataUsingWebRTCSignaling({
+    connectedUserSocketId: connectedUserDetails.socketId,
+    type: constants.webRTCSignaling.OFFER,
+    offer
+  });
+};
+
+export const handleWebRTCOffer = async (data) => {
+  console.log('WebRTC Offer received');
+  console.log('WebRTC Offer received data: ', data);
+  const { offer } = data;
+  // await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+  await peerConnection.setRemoteDescription(offer);
+
+  const answer = await peerConnection.createAnswer();
+  await peerConnection.setLocalDescription(answer);
+
+  wss.sendDataUsingWebRTCSignaling({
+    connectedUserSocketId: connectedUserDetails.socketId,
+    type: constants.webRTCSignaling.ANSWER,
+    answer
+  });
+};
+
+export const handleWebRTCAnswer = async (data) => {
+  console.log('WebRTC Answer received');
+  console.log('WebRTC Answer received data: ', data);
+  const { answer } = data;
+  // await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+  await peerConnection.setRemoteDescription(answer);
+};
+
+export const handleWebRTCIceCandidate = async (data) => {
+  console.log('WebRTC Ice Candidate received');
+  console.log('WebRTC Ice Candidate received data: ', data);
+  const { candidate } = data;
+  try {
+    // peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    await peerConnection.addIceCandidate(candidate);
+  } catch (error) {
+    console.error('Error adding ice candidate', error);
   }
 };
 
@@ -104,4 +170,88 @@ export const getLocalPreview = () => {
       console.log('Error getting when trying to get an access to the camera');
       console.error(error);
     });
+};
+
+const createPeerConnection = () => {
+  peerConnection = new RTCPeerConnection(configuration);
+
+  peerConnection.onicecandidate = (event) => {
+    console.log('getting ice candidate from the stun server');
+    if (event.candidate) {
+      // send our ice candidate to other peer
+      wss.sendDataUsingWebRTCSignaling({
+        connectedUserSocketId: connectedUserDetails.socketId,
+        type: constants.webRTCSignaling.ICE_CANDIDATE,
+        candidate: event.candidate
+      });
+    }
+  };
+
+  peerConnection.onconnectionstatechange = (event) => {
+    console.log('connection state changed', peerConnection.connectionState);
+    if (peerConnection.connectionState === 'connected') {
+      console.log('Peer connection is established');
+    }
+  };
+
+  const remoteStream = new MediaStream();
+
+  store.setRemoteStream(remoteStream);
+  ui.updateRemoteVideo(remoteStream);
+
+  peerConnection.ontrack = (event) => {
+    remoteStream.addTrack(event.track);
+  };
+
+  if (connectedUserDetails.callType === constants.callType.VIDEO_PERSONAL_CODE) {
+    const localStream = store.getState().localStream;
+
+    for (const track of localStream.getTracks()) {
+      peerConnection.addTrack(track, localStream);
+    }
+  }
+};
+
+export const switchBetweenCameraAndScreenSharing = async (screenSharingActive) => {
+  if (screenSharingActive) {
+    const localStream = store.getState().localStream;
+
+    const senders = peerConnection.getSenders();
+    const sender = senders.find((sender) => sender.track.kind === localStream.getVideoTracks()[0].kind);
+
+    if (sender) {
+      const screenSharingStream = store.getState().screenSharingStream;
+
+      if (screenSharingStream) {
+        screenSharingStream.getTracks().forEach((track) => track.stop());
+      }
+
+      sender.replaceTrack(localStream.getVideoTracks()[0]);
+      store.setScreenSharingActive(!screenSharingActive);
+
+      ui.updateLocalVideo(localStream);
+    }
+  } else {
+    console.log('Switching for screen sharing');
+
+    try {
+      let screenSharingStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true
+      });
+
+      store.setScreenSharingStream(screenSharingStream);
+      const senders = peerConnection.getSenders();
+      const sender = senders.find((sender) => sender.track.kind === screenSharingStream.getVideoTracks()[0].kind);
+
+      if (sender) {
+        sender.replaceTrack(screenSharingStream.getVideoTracks()[0]);
+      }
+
+      store.setScreenSharingActive(!screenSharingActive);
+
+      ui.updateLocalVideo(screenSharingStream);
+    } catch (error) {
+      console.error('Error getting screen sharing stream', error);
+    }
+  }
 };

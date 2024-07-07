@@ -137,8 +137,34 @@ const showElement = (element) => {
 export const updateLocalVideo = (stream) => {
   const localVideoEl = document.getElementById('local_video');
   localVideoEl.srcObject = stream;
-  
+
   localVideoEl.addEventListener('loadedmetadata', () => {
     localVideoEl.play();
   });
+};
+
+export const updateRemoteVideo = (stream) => {
+  console.log('updateRemoteVideo', stream);
+  const remoteVideoEl = document.getElementById('remote_video');
+  remoteVideoEl.srcObject = stream;
+};
+
+export const updateMicButton = (micEnabled) => {
+  const micButtonEl = document.getElementById('mic_button_image');
+  const micOnSrc = '../images/mic.png';
+  const micOffSrc = '../images/micOff.png';
+
+  if (micButtonEl) {
+    micButtonEl.src = !micEnabled ? micOnSrc : micOffSrc;
+  }
+};
+
+export const updateCameraButton = (cameraAction) => {
+  const cameraButtonEl = document.getElementById('camera_button_image');
+  const cameraOnSrc = '../images/camera.png';
+  const cameraOffSrc = '../images/cameraOff.png';
+
+  if (cameraButtonEl) {
+    cameraButtonEl.src = !cameraAction ? cameraOnSrc : cameraOffSrc;
+  }
 };
