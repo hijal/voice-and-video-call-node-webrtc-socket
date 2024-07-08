@@ -132,3 +132,16 @@ resumeRecordingButtonEl?.addEventListener('click', () => {
   recording.resumeRecording();
   ui.switchRecordingButtons(false);
 });
+
+const hangupButtonEl = document.getElementById('hang_up_button');
+
+hangupButtonEl?.addEventListener('click', () => {
+  webRTCHandler.handleHangUp();
+});
+
+const hangUpChatButtonEl = document.getElementById('finish_chat_call_button');
+
+hangUpChatButtonEl?.addEventListener('click', () => {
+  webRTCHandler.handleHangUp();
+  // ui.showDashboard();
+});

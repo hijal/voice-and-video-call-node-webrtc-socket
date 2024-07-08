@@ -1,5 +1,6 @@
 import * as constants from './constants.js';
 import * as elements from './elements.js';
+import * as store from './store.js';
 
 export const updatePersonalCode = (code) => {
   const personalCodeEl = document.getElementById('personal_code_paragraph');
@@ -210,3 +211,39 @@ export const switchRecordingButtons = (isResume) => {
     hideElement(resumeRecordingButtonEl);
   }
 };
+
+export const updateUIAfterHangUp = (callType) => {
+  enableDashboard();
+
+  if (callType === constants.callType.VIDEO_PERSONAL_CODE || callType === constants.callType.VIDEO_STRANGER) {
+    const callButtonsEl = document.getElementById('call_buttons');
+    hideElement(callButtonsEl);
+  } else {
+    const chatCallsButtonEl = document.getElementById('finish_chat_button_container');
+    hideElement(chatCallsButtonEl);
+  }
+
+  const newMessageInputEl = document.getElementById('new_message');
+  hideElement(newMessageInputEl);
+
+  clearMessages();
+
+  updateMicButton(false);
+  updateCameraButton(false);
+
+  const remoteVideoEl = document.getElementById('remote_video');
+  hideElement(remoteVideoEl);
+
+  const placeholderEl = document.getElementById('video_placeholder');
+  showElement(placeholderEl);
+
+  removeAllDialog();
+};
+
+export const showVideoCallButtons = () => {
+  const personalCodeVideoButtonEl = document.getElementById('personal_video_chat_button');
+  const strangerVideoButtonEl = document.getElementById('stranger_video_button');
+  showElement(personalCodeVideoButtonEl);
+  showElement(strangerVideoButtonEl);
+};
+

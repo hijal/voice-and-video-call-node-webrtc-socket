@@ -91,6 +91,10 @@ export const getCallingDialog = (rejectCallHandler) => {
   buttonContainer.appendChild(rejectButton);
   dialogContent.appendChild(buttonContainer);
 
+  rejectButton.addEventListener('click', () => {
+    rejectCallHandler();
+  });
+
   return dialog;
 };
 

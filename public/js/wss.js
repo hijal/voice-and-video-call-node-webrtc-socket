@@ -40,6 +40,10 @@ export const registerSocketEvents = (socket) => {
         break;
     }
   });
+
+  socket.on('user-hanged-up', (data) => {
+    webRTCHandler.handleConnectedUserHangUp(data);
+  });
 };
 
 // emitting to the server
@@ -53,4 +57,9 @@ export const sendPreOfferAnswer = (data) => {
 
 export const sendDataUsingWebRTCSignaling = (data) => {
   socketIO.emit('webRTC-signaling', data);
+};
+
+// handling the hang up
+export const sendUserHangUp = (data) => {
+  socketIO.emit('user-hang-up', data);
 };

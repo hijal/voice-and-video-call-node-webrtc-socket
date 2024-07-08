@@ -70,6 +70,15 @@ io.on('connection', (socket) => {
       io.to(connectedPeer).emit('webRTC-signaling', data);
     }
   });
+
+  socket.on('user-hang-up', (data) => {
+    const { connectedUserSocketId } = data;
+    const connectedPeer = connectedPeers.find((cp) => cp === connectedUserSocketId);
+
+    if (connectedPeer) {
+      io.to(connectedPeer).emit('user-hanged-up', data);
+    }
+  });
 });
 
 server.listen(PORT, () => {
