@@ -72,11 +72,11 @@ export const showInfoDialog = (preOfferAnswer) => {
 };
 
 export const showCallElement = (callType) => {
-  if (callType === constants.callType.CHAT_PERSONAL_CODE) {
+  if (callType === constants.callType.CHAT_PERSONAL_CODE || callType === constants.callType.CHAT_STRANGER) {
     showChatCallElements();
   }
 
-  if (callType === constants.callType.VIDEO_PERSONAL_CODE) {
+  if (callType === constants.callType.VIDEO_PERSONAL_CODE || callType === constants.callType.VIDEO_STRANGER) {
     showVideoCallElements();
   }
 };
@@ -247,3 +247,31 @@ export const showVideoCallButtons = () => {
   showElement(strangerVideoButtonEl);
 };
 
+// strangers
+
+export const updateStrangerCheckbox = (isAllowed) => {
+  const checkBoxImageEl = document.getElementById('allow_strangers_checkbox_image');
+  if (isAllowed) {
+    showElement(checkBoxImageEl);
+  } else {
+    hideElement(checkBoxImageEl);
+  }
+};
+
+export const showNoStrangerAvailableDialog = () => {
+  const infoDialogEl = elements.getInfoDialog(
+    'No strangers available',
+    'No other users are currently available for video chat. Please try again later.'
+  );
+
+  if (infoDialogEl) {
+    const dialogEl = document.getElementById('dialog');
+    // remove all the elements
+    dialogEl.querySelectorAll('*').forEach((dialog) => dialog.remove());
+    dialogEl.appendChild(infoDialogEl);
+
+    setTimeout(() => {
+      removeAllDialog();
+    }, 4000);
+  }
+};

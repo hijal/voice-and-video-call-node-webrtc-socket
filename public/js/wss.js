@@ -2,6 +2,7 @@ import * as store from './store.js';
 import * as ui from './ui.js';
 import * as webRTCHandler from './webRTCHandler.js';
 import * as constants from './constants.js';
+import * as strangers from './stranger.js';
 
 let socketIO = null;
 
@@ -44,6 +45,10 @@ export const registerSocketEvents = (socket) => {
   socket.on('user-hanged-up', (data) => {
     webRTCHandler.handleConnectedUserHangUp(data);
   });
+
+  socket.on('stranger-socket-id', (data) => {
+    strangers.connectWithStrangers(data);
+  });
 };
 
 // emitting to the server
@@ -62,4 +67,12 @@ export const sendDataUsingWebRTCSignaling = (data) => {
 // handling the hang up
 export const sendUserHangUp = (data) => {
   socketIO.emit('user-hang-up', data);
+};
+
+export const changeStrangerConnectionStatus = (data) => {
+  socketIO.emit('stranger-connection-status', data);
+};
+
+export const getStrangerSocketId = () => {
+  socketIO.emit('get-stranger-socket-id');
 };

@@ -4,6 +4,7 @@ import * as webRTCHandler from './webRTCHandler.js';
 import * as constants from './constants.js';
 import * as ui from './ui.js';
 import * as recording from './recording.js';
+import * as strangers from './stranger.js';
 
 const socket = io('/');
 
@@ -144,4 +145,28 @@ const hangUpChatButtonEl = document.getElementById('finish_chat_call_button');
 hangUpChatButtonEl?.addEventListener('click', () => {
   webRTCHandler.handleHangUp();
   // ui.showDashboard();
+});
+
+// stranger section
+
+const strangerChatButtonEl = document.getElementById('stranger_chat_button');
+const strangerVideoButtonEl = document.getElementById('stranger_video_button');
+//allow_strangers_checkbox
+const allowStrangersCheckboxEl = document.getElementById('allow_strangers_checkbox');
+
+allowStrangersCheckboxEl.addEventListener('click', () => {
+  const checkBoxStatus = store.getState().allowConnectionsFromStrangers;
+  ui.updateStrangerCheckbox(!checkBoxStatus);
+  store.setAllowConnectionsFromStrangers(!checkBoxStatus);
+  strangers.changeStrangerConnectionStatus(!checkBoxStatus);
+});
+
+strangerChatButtonEl.addEventListener('click', () => {
+  const callType = constants.callType.CHAT_STRANGER;
+  strangers.getStrangerSocketIdAndConnection(callType);
+});
+
+strangerVideoButtonEl.addEventListener('click', () => {
+  const callType = constants.callType.VIDEO_STRANGER;
+  strangers.getStrangerSocketIdAndConnection(callType);
 });
