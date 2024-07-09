@@ -145,7 +145,6 @@ export const updateLocalVideo = (stream) => {
 };
 
 export const updateRemoteVideo = (stream) => {
-  console.log('updateRemoteVideo', stream);
   const remoteVideoEl = document.getElementById('remote_video');
   remoteVideoEl.srcObject = stream;
 };

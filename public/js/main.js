@@ -51,7 +51,6 @@ const micButtonEl = document.getElementById('mic_button');
 micButtonEl.addEventListener('click', () => {
   const localStream = store.getState().localStream;
   if (localStream) {
-    console.log(localStream.getAudioTracks());
     const micEnabled = localStream.getAudioTracks()[0].enabled;
     localStream.getAudioTracks()[0].enabled = !micEnabled;
 
@@ -64,7 +63,6 @@ const cameraButtonEl = document.getElementById('camera_button');
 cameraButtonEl.addEventListener('click', () => {
   const localStream = store.getState().localStream;
   if (localStream) {
-    console.log(localStream.getVideoTracks());
     const cameraAction = localStream.getVideoTracks()[0].enabled;
     localStream.getVideoTracks()[0].enabled = !cameraAction;
 

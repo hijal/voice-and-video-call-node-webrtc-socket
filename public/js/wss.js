@@ -8,7 +8,6 @@ let socketIO = null;
 
 export const registerSocketEvents = (socket) => {
   socket.on('connect', () => {
-    console.log('Connect  to server successfully');
     socketIO = socket;
 
     store.setSocketId(socket.id);
@@ -24,8 +23,6 @@ export const registerSocketEvents = (socket) => {
   });
 
   socket.on('webRTC-signaling', (data) => {
-    console.log('webRTC-signaling', data);
-
     switch (data.type) {
       case constants.webRTCSignaling.OFFER:
         webRTCHandler.handleWebRTCOffer(data);

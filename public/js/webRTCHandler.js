@@ -78,8 +78,6 @@ const callingDialogRejectHandler = () => {
 };
 
 const acceptCallHandler = () => {
-  console.log('accepting the call');
-
   createPeerConnection();
 
   sendPreOfferAnswer(constants.preOfferAnswer.CALL_ACCEPTED);
@@ -87,7 +85,6 @@ const acceptCallHandler = () => {
 };
 
 const rejectCallHandler = () => {
-  console.log('reject the call');
   sendPreOfferAnswer();
   setIncomingCallAvailability();
   sendPreOfferAnswer(constants.preOfferAnswer.CALL_REJECTED);
@@ -106,8 +103,6 @@ const sendPreOfferAnswer = (preOfferAnswer, socketId = null) => {
 };
 
 export const handlePreOfferAnswer = async (data) => {
-  console.log('Pre offer Answer received');
-  console.log('Pre offer Answer received data: ', data);
   const { callerSocketId, preOfferAnswer } = data;
 
   ui.removeAllDialog();
@@ -138,14 +133,11 @@ export const handlePreOfferAnswer = async (data) => {
 
     await sendWebRTCOffer();
   } else {
-    console.log('Unknown preference', callerSocketId);
-    console.log('Invalid pre offer answer', preOfferAnswer);
+    console.log('Unknown preference');
   }
 };
 
 const sendWebRTCOffer = async () => {
-  console.log('Sending WebRTC Offer');
-
   const offer = await peerConnection.createOffer();
   await peerConnection.setLocalDescription(offer);
 
@@ -157,8 +149,6 @@ const sendWebRTCOffer = async () => {
 };
 
 export const handleWebRTCOffer = async (data) => {
-  console.log('WebRTC Offer received');
-  console.log('WebRTC Offer received data: ', data);
   const { offer } = data;
   // await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
   await peerConnection.setRemoteDescription(offer);
@@ -174,16 +164,12 @@ export const handleWebRTCOffer = async (data) => {
 };
 
 export const handleWebRTCAnswer = async (data) => {
-  console.log('WebRTC Answer received');
-  console.log('WebRTC Answer received data: ', data);
   const { answer } = data;
   // await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
   await peerConnection.setRemoteDescription(answer);
 };
 
 export const handleWebRTCIceCandidate = async (data) => {
-  console.log('WebRTC Ice Candidate received');
-  console.log('WebRTC Ice Candidate received data: ', data);
   const { candidate } = data;
   try {
     // peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
@@ -214,22 +200,19 @@ const createPeerConnection = () => {
   dataChannel = peerConnection.createDataChannel('chat');
 
   peerConnection.ondatachannel = (event) => {
-    console.log('Data Channel created');
     const dataChannel = event.channel;
 
     dataChannel.onopen = () => {
-      console.log('Data Channel is open');
+      console.log('Data Channel ready to receive messages');
     };
 
     dataChannel.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      console.log('Received message from data channel: ', message);
       ui.appendMessage(message);
     };
   };
 
   peerConnection.onicecandidate = (event) => {
-    console.log('getting ice candidate from the stun server');
     if (event.candidate) {
       // send our ice candidate to other peer
       wss.sendDataUsingWebRTCSignaling({
@@ -241,7 +224,6 @@ const createPeerConnection = () => {
   };
 
   peerConnection.onconnectionstatechange = (event) => {
-    console.log('connection state changed', peerConnection.connectionState);
     if (peerConnection.connectionState === 'connected') {
       console.log('Peer connection is established');
     }
@@ -292,8 +274,6 @@ export const switchBetweenCameraAndScreenSharing = async (screenSharingActive) =
       ui.updateLocalVideo(localStream);
     }
   } else {
-    console.log('Switching for screen sharing');
-
     try {
       let screenSharingStream = await navigator.mediaDevices.getDisplayMedia({
         video: true

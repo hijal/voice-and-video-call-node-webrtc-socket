@@ -12,16 +12,14 @@ export const changeStrangerConnectionStatus = (status) => {
 
 export const getStrangerSocketIdAndConnection = (callType) => {
   strangerCallType = callType;
-  console.log('getStrangerSocketIdAndConnection called', callType);
   wss.getStrangerSocketId();
 };
 
 export const connectWithStrangers = (data) => {
   const { strangerSocketId } = data;
-  console.log('Stranger socket data: ', data);
   if (strangerSocketId) {
     webRTCHandler.sendPreOffer(strangerCallType, strangerSocketId);
   } else {
-    ui.showNoStrangerAvailableDialog()
+    ui.showNoStrangerAvailableDialog();
   }
 };
